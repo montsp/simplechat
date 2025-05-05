@@ -72,15 +72,28 @@ def lambda_handler(event, context):
                 })
         
         bedrock_messages_str = str(bedrock_messages[-1])
+        bedrock_messages_dict = json.loads(bedrock_messages_str.replace("'", "\""))
+
+        if bedrock_messages_dict['role'] == 'user' and bedrock_messages_dict['content'] and len(bedrock_messages_dict['content']) > 0 and 'text' in bedrock_messages_dict['content'][0]:
+            prompt = str(bedrock_messages_dict['content'][0]['text'])
+            print(prompt)
 
         # リクエストペイロード
         request_payload = {
-            "messages": bedrock_messages_str,
-            "prompt": "string",
+            "prompt": prompt,
             "max_new_tokens": 512,
             "do_sample": True,
             "temperature": 0.7,
             "top_p": 0.9
+        }
+
+        {
+            'messages': "{'role': 'user', 'content': [{'text': '中華人民共和国の首都は？'}]}",
+            'prompt': 'string',
+            'max_new_tokens': 512,
+            'do_sample': True,
+            'temperature': 0.7,
+            'top_p': 0.9
         }
 
         print(request_payload)
