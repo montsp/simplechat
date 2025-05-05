@@ -87,27 +87,19 @@ def lambda_handler(event, context):
             "top_p": 0.9
         }
 
-        {
-            'messages': "{'role': 'user', 'content': [{'text': '中華人民共和国の首都は？'}]}",
-            'prompt': 'string',
-            'max_new_tokens': 512,
-            'do_sample': True,
-            'temperature': 0.7,
-            'top_p': 0.9
-        }
-
-        print(request_payload)
+        print(f"リクエストペイロード (Python辞書): {request_payload}")
+        json_payload = json.dumps(request_payload)
+        print(f"リクエストペイロード (JSON文字列): {json_payload}")
+        request_payload = json_payload
         
         url = f"{MODEL_ID}/generate"    
-        print(url)
-        with urllib.request.urlopen(url, data=json.dumps(request_payload).encode('utf-8')) as response:
-            response_body = json.loads(response['generated_text'].read().decode('utf-8'))
-        
-        print(response_body)
-        
-        # レスポンスを解析
-        #response_body = json.loads(response['body'].read())
-        print("Bedrock response:", json.dumps(response_body, default=str))
+        headers = {'Content-Type': 'application/json'}
+        req = urllib.request.Request(url, data=json_payload, headers=headers, method='POST')
+
+        with urllib.request.urlopen(req) as response:
+            response_body = json.loads(response.read().decode('utf-8'))
+            print(response_body)
+            print("Bedrock response:", json.dumps(response_body, default=str))
         
         # 応答の検証
         if not response_body.get('generated_text'):
