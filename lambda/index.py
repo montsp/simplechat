@@ -91,10 +91,11 @@ def lambda_handler(event, context):
         json_payload = json.dumps(request_payload)
         print(f"リクエストペイロード (JSON文字列): {json_payload}")
         request_payload = json_payload
+        json_payload_bytes = json_payload.encode('utf-8')
         
         url = f"{MODEL_ID}/generate"    
         headers = {'Content-Type': 'application/json'}
-        req = urllib.request.Request(url, data=json_payload, headers=headers, method='POST')
+        req = urllib.request.Request(url, data=json_payload_bytes, headers=headers, method='POST')
 
         with urllib.request.urlopen(req) as response:
             response_body = json.loads(response.read().decode('utf-8'))
