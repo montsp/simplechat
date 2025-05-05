@@ -82,10 +82,15 @@ def lambda_handler(event, context):
             "temperature": 0.7,
             "top_p": 0.9
         }
+
+        print(request_payload)
         
         url = f"{MODEL_ID}/generate"    
+        print(url)
         with urllib.request.urlopen(url, data=json.dumps(request_payload).encode('utf-8')) as response:
             response_body = json.loads(response['generated_text'].read().decode('utf-8'))
+        
+        print(response_body)
         
         # レスポンスを解析
         #response_body = json.loads(response['body'].read())
